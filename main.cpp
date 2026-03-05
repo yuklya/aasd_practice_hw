@@ -1,25 +1,70 @@
 template<class T>
-class DoublyLinkedList {
-private:
-    struct Node {
-        T data;
-        Node* next;
-        Node* prev;
-        Node(const T& val = T(), Node* n = nullptr, Node* p = nullptr)
-            : data(val), next(n), prev(p) {}
-    };
-    Node* fake;
-public:
-    DoublyLinkedList();
-    ~DoublyLinkedList();
-    void push_front(const T& value);
-    void push_back(const T& value);
-    void insert_after(Node* node, const T& value);
-    bool remove(const T& value);
-    void remove(Node* node);
-    Node* find(const T& value) const;
-    bool empty() const;
-    void clear();
-    Node* begin() const;
-    Node* end() const;
-};
+DoublyLinkedList<T>::DoublyLinkedList() {
+    fake = new Node();
+    fake->next = fake;
+    fake->prev = fake;
+}
+
+template<class T>
+DoublyLinkedList<T>::~DoublyLinkedList() {
+    clear();
+    delete fake;
+}
+
+template<class T>
+bool DoublyLinkedList<T>::empty() const {
+    return fake->next == fake;
+}
+
+template<class T>
+void DoublyLinkedList<T>::push_front(const T& value) {
+    Node* newNode = new Node(value);
+    newNode->next = fake->next;
+    newNode->prev = fake;
+    fake->next->prev = newNode;
+    fake->next = newNode;
+}
+
+template<class T>
+void DoublyLinkedList<T>::push_back(const T& value) {
+    Node* newNode = new Node(value);
+    newNode->prev = fake->prev;
+    newNode->next = fake;
+    fake->prev->next = newNode;
+    fake->prev = newNode;
+}
+
+template<class T>
+void DoublyLinkedList<T>::insert_after(Node* node, const T& value) {
+    if (!node || node == fake) return;
+    Node* newNode = new Node(value);
+    newNode->next = node->next;
+    newNode->prev = node;
+    node->next->prev = newNode;
+    node->next = newNode;
+}
+
+template<class T>
+bool DoublyLinkedList<T>::remove(const T& value) {
+    Node* current = fake->next;
+    while (current != fake) {
+        if (current->data == value) {
+            current->prev->next = current->next;
+            current->next->prev = current->prev;
+            delete current;
+            return true;
+        }
+        current = current->next;
+    }
+    return false;
+}
+
+template<class T>
+void DoublyLinkedList<T>::remove(Node* node) {
+    if (!node || node == fake) return;
+    node->prev->next = node->next;
+    node->next->prev = node->prev;
+    delete node;
+}
+
+template<class T>
