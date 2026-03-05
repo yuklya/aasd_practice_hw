@@ -68,3 +68,35 @@ void DoublyLinkedList<T>::remove(Node* node) {
 }
 
 template<class T>
+typename DoublyLinkedList<T>::Node* DoublyLinkedList<T>::find(const T& value) const {
+    Node* current = fake->next;
+    while (current != fake) {
+        if (current->data == value) {
+            return current;
+        }
+        current = current->next;
+    }
+    return nullptr;
+}
+
+template<class T>
+void DoublyLinkedList<T>::clear() {
+    Node* current = fake->next;
+    while (current != fake) {
+        Node* nextNode = current->next;
+        delete current;
+        current = nextNode;
+    }
+    fake->next = fake;
+    fake->prev = fake;
+}
+
+template<class T>
+typename DoublyLinkedList<T>::Node* DoublyLinkedList<T>::begin() const {
+    return fake->next;
+}
+
+template<class T>
+typename DoublyLinkedList<T>::Node* DoublyLinkedList<T>::end() const {
+    return fake;
+}
